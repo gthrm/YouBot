@@ -33,7 +33,6 @@ bot.help((ctx) => ctx.reply("Send me the TouTube link 😜"));
 bot.on("sticker", (ctx) => ctx.reply("👍"));
 bot.hears("hi", (ctx) => ctx.reply("Hey there"));
 bot.on("text", async (ctx) => {
-  console.log("ctx.message.from", ctx.message.from, ctx.message);
   if (!ctx.message.from.is_bot) {
     const userId = ctx.message.from.id;
     const text = ctx.message.text;
