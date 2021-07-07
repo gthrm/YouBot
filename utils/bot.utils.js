@@ -9,6 +9,13 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 const mask = "https://www.youtube.com/watch?v=";
 const mask2 = "https://youtu.be/";
 
+const WELCOME_INFO = {
+  key: "welcome/ce9f65bd-acaa-4d16-8fad-fbe63e5d6a37.mp3",
+  title: "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+  description:
+    "Rick Astley's official music video for “Never Gonna Give You Up” \n\nSubscribe to the official Rick Astley YouTube channel: https://RickAstley.lnk.to/YTSubID\n\nFollow Rick Astley:\nFacebook: https://RickAstley.lnk.to/FBFollowID \nTwitter: https://RickAstley.lnk.to/TwitterID \nInstagram: https://RickAstley.lnk.to/InstagramID \nWebsite: https://RickAstley.lnk.to/storeID \nTikTok: https://RickAstley.lnk.to/TikTokID\n\nLyrics:\nWe’re no strangers to love\nYou know the rules and so do I\nA full commitment’s what I’m thinking of\nYou wouldn’t get this from any other guy\n\nI just wanna tell you how I’m feeling\nGotta make you understand\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\nWe’ve known each other for so long\nYour heart’s been aching but you’re too shy to say it\nInside we both know what’s been going on\nWe know the game and we’re gonna play it\n\nAnd if you ask me how I’m feeling\nDon’t tell me you’re too blind to see\n\nNever gonna give you up\nNever gonna let you down\nNever gonna run around and desert you\nNever gonna make you cry\nNever gonna say goodbye\nNever gonna tell a lie and hurt you\n\n#RickAstley #NeverGonnaGiveYouUp #OfficialMusicVideo",
+};
+
 const validateUrl = (url) => url && (url.includes(mask) || url.includes(mask2));
 const replaceUrl = (url) => {
   const tempArray = url.split(" ");
@@ -24,6 +31,7 @@ bot.start(async (ctx) => {
     const userFeed = await db.getFeedByUserId({ userId });
     if (!userFeed?._id) {
       db.createUserFeed({ userId, userName: ctx.from.username });
+      db.createFeedItem({ userId, ...WELCOME_INFO });
     }
   } catch (error) {
     console.log("createUserFeed error", error);

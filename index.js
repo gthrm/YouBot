@@ -48,7 +48,7 @@ const helmetConfig = {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(limiter);
 app.use(helmet(helmetConfig));
@@ -91,26 +91,26 @@ app.get("/rss/:id", async (req, res) => {
   }
 });
 
-app.get("/testerfeed", (req, res) => {
-  db.getFeed()
-    .then((data) => res.send(data))
-    .catch((err) => res.send(err));
-});
-app.get("/testeritems", (req, res) => {
-  db.getFeedItems()
-    .then((data) => res.send(data))
-    .catch((err) => res.send(err));
-});
-app.get("/testdelfeed", (req, res) => {
-  db.removeFeed()
-    .then((data) => res.send(data))
-    .catch((err) => res.send(err));
-});
-app.get("/testdelitems", (req, res) => {
-  db.removeFeedItems()
-    .then((data) => res.send(data))
-    .catch((err) => res.send(err));
-});
+// app.get("/testerfeed", (req, res) => {
+//   db.getFeed()
+//     .then((data) => res.send(data))
+//     .catch((err) => res.send(err));
+// });
+// app.get("/testeritems", (req, res) => {
+//   db.getFeedItems()
+//     .then((data) => res.send(data))
+//     .catch((err) => res.send(err));
+// });
+// app.get("/testdelfeed", (req, res) => {
+//   db.removeFeed()
+//     .then((data) => res.send(data))
+//     .catch((err) => res.send(err));
+// });
+// app.get("/testdelitems", (req, res) => {
+//   db.removeFeedItems()
+//     .then((data) => res.send(data))
+//     .catch((err) => res.send(err));
+// });
 
 http.createServer(app).listen(process.env.SERVER_PORT, function () {
   console.log(
