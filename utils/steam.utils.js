@@ -15,14 +15,19 @@ const s3 = new aws.S3({
   endpoint: spacesEndpoint,
 });
 
-const saveVideoAsMP3 = (url, userId, next = () => {}) => {
+const saveVideoAsMP3 = async (url, userId, next = () => {}) => {
   const videoId = uuidv4();
+  const info = await ytdl.getInfo(url);
+  console.log("info", info);
   const stream = ytdl(url, {
     quality: "highestaudio",
   });
   const fileName = `${__dirname}/${videoId}.mp3`;
   const key = `${userId}/${videoId}.mp3`;
   const start = Date.now();
+  if(info?.videoDetails?.isLive) {
+    return next({ error: "Sorry, this is live stream 🛑" });
+  }
   return ffmpeg(stream)
     .audioBitrate(128)
     .save(fileName)
@@ -30,7 +35,7 @@ const saveVideoAsMP3 = (url, userId, next = () => {}) => {
       readline.cursorTo(process.stdout, 0);
       process.stdout.write(`${p.targetSize}kb downloaded`);
       if (p.targetSize > 1000000) {
-        return next({ error: "Error! The file is very long 🛑" });
+        return next({ error: "The file is very long 🛑" });
       }
     })
     .on("end", async () => {
@@ -45,7 +50,7 @@ const saveVideoAsMP3 = (url, userId, next = () => {}) => {
       await fs.unlinkSync(fileName);
       console.log("\nDownload complete", data);
       console.log(`\ndone, thanks - ${(Date.now() - start) / 1000}s`);
-      const info = await ytdl.getInfo(url);
+
       console.log("Info", info);
       next({ fileName, key, info });
     });

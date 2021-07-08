@@ -38,7 +38,7 @@ bot.start(async (ctx) => {
     return ctx.reply("Something went wrong 😐");
   }
   ctx.reply(
-    `Congratulations, ${ctx.from.username}! 🎉 It's your personal link. Push to it for coping. Then add link to the podcast app`
+    `Congratulations, ${ctx.from.username}! 🎉 It's your personal link. Put the link to your podcast app.`
   );
   ctx.telegram
     .sendMessage(ctx.message.chat.id, "`" + personalLink + "`", {
@@ -63,13 +63,13 @@ bot.start(async (ctx) => {
       ctx.telegram.pinChatMessage(ctx.message.chat.id, message_id);
       ctx.reply("How to add url to podcast app 👇", keyboard);
     });
+  ctx.telegram.sendMessage(
+    ctx.message.chat.id,
+    "Send me a YouTube link OR share a video from YouTube. Then you can listen to this video as a podcast in your personal podcast."
+  );
 });
 
-bot.hears("🔍 Search", (ctx) => ctx.reply("Yay!"));
-bot.hears("📢 Ads", (ctx) => ctx.reply("Free hugs. Call now!"));
-bot.hears("☸ Setting", (ctx) => ctx.reply("Hey there"));
-
-bot.help((ctx) => ctx.reply("Send me the TouTube link 😜"));
+bot.help((ctx) => ctx.reply("Send me the YouTube link 😜"));
 bot.on("sticker", (ctx) => ctx.reply("👍"));
 bot.on("text", async (ctx) => {
   if (!ctx.message.from.is_bot) {
