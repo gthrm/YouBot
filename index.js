@@ -8,7 +8,7 @@ const db = require("./utils/data-base.utils");
 const podcast = require("./utils/podcast.utils");
 const { bot } = require("./utils/bot.utils");
 const { corsCheck } = require("./utils/cors.utils");
-
+const { doMainJob } = require("./utils/queue.utils");
 require("log-timestamp");
 require("dotenv").config();
 
@@ -118,4 +118,5 @@ http.createServer(app).listen(process.env.SERVER_PORT, function () {
   );
   bot.launch();
   db.setUpConnection();
+  doMainJob()
 });

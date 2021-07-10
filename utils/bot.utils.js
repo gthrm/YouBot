@@ -1,6 +1,8 @@
 const { Telegraf, Markup } = require("telegraf");
 const { saveVideoAsMP3 } = require("./steam.utils");
 const db = require("./data-base.utils");
+const { queue } = require("./queue.utils");
+const { v4: uuidv4 } = require("uuid");
 
 require("dotenv").config();
 
@@ -81,24 +83,31 @@ bot.on("text", async (ctx) => {
         ctx.message.chat.id,
         `${ctx.message.from.first_name}, please, wait a minute...`
       );
-      saveVideoAsMP3(replacedUrl, userId, async ({ key, info, error }) => {
-        if (error) {
-          return ctx.reply(`${ctx.message.from.first_name}, ${error}`);
-        }
-        try {
-          await db.createFeedItem({
-            userId,
-            key,
-            title: info.videoDetails.title,
-            description: info.videoDetails.description,
-          });
-          return ctx.reply(
-            `${ctx.message.from.first_name}, the file successfully added to your personal podcast 👍`
-          );
-        } catch (error) {
-          return ctx.reply("Something went wrong 😐");
-        }
-      });
+      const jobId = uuidv4();
+      const job = (next = () => {}) =>
+        saveVideoAsMP3(replacedUrl, userId, async ({ key, info, error }) => {
+          next(jobId); // do next job
+          if (error) {
+            return ctx.reply(`${ctx.message.from.first_name}, ${error}`);
+          }
+          try {
+            await db.createFeedItem({
+              userId,
+              key,
+              title: info.videoDetails.title,
+              description: info.videoDetails.description,
+            });
+            return ctx.reply(
+              `${ctx.message.from.first_name}, the file successfully added to your personal podcast 👍`
+            );
+          } catch (error) {
+            return ctx.reply("Something went wrong 😐");
+          }
+        });
+      queue.push({ id: jobId, job, started: false });
+      ctx.reply(
+        `${ctx.message.from.first_name}, your position in the queue is ${queue.length}`
+      );
     } else {
       ctx.reply(
         `${ctx.message.from.first_name}, YouTube URL not valid! Send valid URL OR share video from YouTube 😕`

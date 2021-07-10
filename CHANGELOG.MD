@@ -1,4 +1,8 @@
-# THIS IS CHANGELOG
+# THIS IS A CHANGELOG
+
+## 1.0.3 - 08.07.2021
+
+- Added queue
 
 ## 1.0.2 - 08.07.2021
 

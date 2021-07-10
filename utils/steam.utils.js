@@ -18,14 +18,14 @@ const s3 = new aws.S3({
 const saveVideoAsMP3 = async (url, userId, next = () => {}) => {
   const videoId = uuidv4();
   const info = await ytdl.getInfo(url);
-  console.log("info", info);
+
   const stream = ytdl(url, {
     quality: "highestaudio",
   });
   const fileName = `${__dirname}/${videoId}.mp3`;
   const key = `${userId}/${videoId}.mp3`;
   const start = Date.now();
-  if(info?.videoDetails?.isLive) {
+  if (info?.videoDetails?.isLive) {
     return next({ error: "Sorry, this is live stream 🛑" });
   }
   return ffmpeg(stream)
