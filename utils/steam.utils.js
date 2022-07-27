@@ -4,6 +4,8 @@ const fs = require("fs");
 const ytdl = require("ytdl-core");
 const ffmpeg = require("fluent-ffmpeg");
 const { v4: uuidv4 } = require("uuid");
+const { logger } = require('./logger.utils');
+
 require("dotenv").config();
 
 const SPACE_NAME = process.env.SPACE_NAME;
@@ -15,7 +17,7 @@ const s3 = new aws.S3({
   endpoint: spacesEndpoint,
 });
 
-const saveVideoAsMP3 = async (url, userId, next = () => {}) => {
+const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
   const videoId = uuidv4();
   const info = await ytdl.getInfo(url);
 
@@ -25,9 +27,10 @@ const saveVideoAsMP3 = async (url, userId, next = () => {}) => {
   const fileName = `${__dirname}/${videoId}.mp3`;
   const key = `${userId}/${videoId}.mp3`;
   const start = Date.now();
-  if (info?.videoDetails?.isLive) {
-    return next({ error: "Sorry, this is live stream 🛑" });
-  }
+  // if (info?.videoDetails?.isLive) {
+  //   logger.info
+  //   return next({ error: "Sorry, this is live stream 🛑" });
+  // }
   return ffmpeg(stream)
     .audioBitrate(128)
     .save(fileName)
