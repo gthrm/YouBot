@@ -16,6 +16,15 @@ const s3 = new aws.S3({
   endpoint: spacesEndpoint,
 });
 
+// 3 hour OR lengthSeconds
+function calculateDuration(lengthSeconds) {
+  const lengthSecondsNumber = Number(lengthSeconds);
+  if (lengthSecondsNumber && MAX_DURATION && lengthSecondsNumber <= Number(MAX_DURATION)) {
+    return lengthSecondsNumber;
+  }
+  return Number(MAX_DURATION);
+}
+
 const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
   const videoId = uuidv4();
   const info = await ytdl.getInfo(url);
@@ -27,16 +36,12 @@ const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
   const fileName = `${__dirname}/${videoId}.mp3`;
   const key = `${userId}/${videoId}.mp3`;
   const start = Date.now();
-  const DURATION = info?.videoDetails.isLive
-    ? Number(MAX_DURATION)
-      ? Number(MAX_DURATION) < Number(info?.videoDetails.lengthSeconds)
-      : Number(MAX_DURATION)
-    : Number(info?.videoDetails.lengthSeconds); // 3 hour OR lengthSeconds
+  const duration = calculateDuration(info?.videoDetails.lengthSeconds);
 
-  logger.info(`Duration has ben calcalated: ${DURATION} sec.`, DURATION);
+  logger.info(`Duration has ben calcalated: ${duration} sec.`, duration);
   return ffmpeg(stream)
     .audioBitrate(128)
-    .setDuration(DURATION)
+    .setDuration(duration)
     .save(fileName)
     .on('progress', (p) => {
       readline.cursorTo(process.stdout, 0);
