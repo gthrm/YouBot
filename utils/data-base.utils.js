@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const { logger } = require('./logger.utils');
+
 require("../models/feed.model");
 require("../models/item.model");
 require("dotenv").config();
@@ -28,10 +30,10 @@ function setUpConnection() {
       MONGOOSE_CONNECT_CONFIG
     )
     .then(() => {
-      console.log(`Connection to database established`);
+      logger.info(`Connection to database established`);
     })
     .catch((err) => {
-      console.log(`db error ${err.message}`);
+      logger.error(`db error ${err.message}`);
       process.exit(-1);
     });
 }

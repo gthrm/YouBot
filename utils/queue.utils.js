@@ -1,4 +1,6 @@
 const schedule = require("node-schedule");
+const { logger } = require('./logger.utils');
+
 const RECURRENCE_RULE = process.env.RECURRENCE_RULE;
 const queue = [];
 
@@ -15,7 +17,7 @@ const jobCallback = () => {
 };
 
 const doMainJob = () => {
-  console.log("MainJob started");
+  logger.info("MainJob started");
   schedule.scheduleJob(RECURRENCE_RULE, jobCallback);
 };
 

@@ -9,7 +9,8 @@ const podcast = require("./utils/podcast.utils");
 const { bot } = require("./utils/bot.utils");
 const { corsCheck } = require("./utils/cors.utils");
 const { doMainJob } = require("./utils/queue.utils");
-require("log-timestamp");
+const { logger } = require('./utils/logger.utils');
+
 require("dotenv").config();
 
 const limiter = rateLimit({
@@ -59,7 +60,6 @@ app.get("/rss/:id", async (req, res) => {
   try {
     const feedData = await db.getFeedByUserId({ userId });
     const feedItemsData = await db.getFeedItemsListByUserId({ userId });
-    console.log("feedData", feedData, "feedItemsData", feedItemsData);
     if (feedData) {
       const { title, description, feed_url: localUrl } = feedData;
       const feed_url = `${process.env.HOST_NAME}/${localUrl}`;
@@ -68,7 +68,7 @@ app.get("/rss/:id", async (req, res) => {
         description,
         feed_url,
       });
-      console.log("Empty feed", feed);
+      logger.info("Empty feed", feed);
       feedItemsData.forEach((feedItem) =>
         podcast.addItemToFeed(feed, {
           _id: `${feedItem._id}`,
@@ -79,7 +79,7 @@ app.get("/rss/:id", async (req, res) => {
           fileUrl: `https://${process.env.SPACE_NAME}.${process.env.SPACE_ENDPOINT}/${feedItem.key}`,
         })
       );
-      console.log("Not empty feed", feed);
+      logger.info("Not empty feed", feed);
       const xmlFeed = await podcast.getXml(feed);
       res.set("Content-Type", "application/rss+xml");
       return res.send(xmlFeed);
@@ -113,10 +113,15 @@ app.get("/rss/:id", async (req, res) => {
 // });
 
 http.createServer(app).listen(process.env.SERVER_PORT, function () {
-  console.log(
+  logger.info(
     `Express server listening on port ${process.env.SERVER_PORT}. chrome://inspect`
   );
-  bot.launch();
-  db.setUpConnection();
-  doMainJob()
+  try {
+    bot.launch();
+    db.setUpConnection();
+    doMainJob()
+  } catch (error) {
+    logger.error(new Error(error))
+  }
+
 });

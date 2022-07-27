@@ -3,6 +3,7 @@ const { saveVideoAsMP3 } = require("./steam.utils");
 const db = require("./data-base.utils");
 const { queue } = require("./queue.utils");
 const { v4: uuidv4 } = require("uuid");
+const { logger } = require('./logger.utils');
 
 require("dotenv").config();
 
@@ -25,7 +26,7 @@ const replaceUrl = (url) => {
 };
 
 bot.start(async (ctx) => {
-  console.log("start ctx", ctx.from);
+  logger.info("start ctx", ctx.from);
   const userId = ctx.from.id;
   const personalLink = `${process.env.HOST_NAME}/rss/${userId}`;
 
@@ -36,7 +37,7 @@ bot.start(async (ctx) => {
       db.createFeedItem({ userId, ...WELCOME_INFO });
     }
   } catch (error) {
-    console.log("createUserFeed error", error);
+    logger.info("createUserFeed error", error);
     return ctx.reply("Something went wrong 😐");
   }
   ctx.reply(
