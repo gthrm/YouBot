@@ -1,17 +1,17 @@
-const express = require("express");
-const cors = require("cors");
-const http = require("http");
-const path = require("path");
-const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
-const db = require("./utils/data-base.utils");
-const podcast = require("./utils/podcast.utils");
-const { bot } = require("./utils/bot.utils");
-const { corsCheck } = require("./utils/cors.utils");
-const { doMainJob } = require("./utils/queue.utils");
+const express = require('express');
+const cors = require('cors');
+const http = require('http');
+const path = require('path');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const db = require('./utils/data-base.utils');
+const podcast = require('./utils/podcast.utils');
+const { bot } = require('./utils/bot.utils');
+const { corsCheck } = require('./utils/cors.utils');
+const { doMainJob } = require('./utils/queue.utils');
 const { logger } = require('./utils/logger.utils');
 
-require("dotenv").config();
+require('dotenv').config();
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -19,7 +19,7 @@ const limiter = rateLimit({
   message: {
     error: {
       code: 429,
-      message: "Too many requests from your IP. Please wait 15 Minutes",
+      message: 'Too many requests from your IP. Please wait 15 Minutes',
     },
   },
 });
@@ -37,7 +37,7 @@ const helmetConfig = {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:", "https://*"],
+      imgSrc: ["'self'", 'data:', 'https://*'],
       connectSrc: ["'self'"],
       fontSrc: ["'self'"],
       objectSrc: ["'self'"],
@@ -53,9 +53,9 @@ app.use(cors(corsOptions));
 
 app.use(limiter);
 app.use(helmet(helmetConfig));
-app.use("/", express.static(path.join(__dirname, "./public")));
+app.use('/', express.static(path.join(__dirname, './public')));
 
-app.get("/rss/:id", async (req, res) => {
+app.get('/rss/:id', async (req, res) => {
   const userId = req.params.id;
   try {
     const feedData = await db.getFeedByUserId({ userId });
@@ -68,20 +68,18 @@ app.get("/rss/:id", async (req, res) => {
         description,
         feed_url,
       });
-      logger.info("Empty feed", feed);
-      feedItemsData.forEach((feedItem) =>
-        podcast.addItemToFeed(feed, {
-          _id: `${feedItem._id}`,
-          title: feedItem.title,
-          description: feedItem.description,
-          url: `${process.env.HOST_NAME}/${localUrl}`,
-          date: feedItem.createdAt,
-          fileUrl: `https://${process.env.SPACE_NAME}.${process.env.SPACE_ENDPOINT}/${feedItem.key}`,
-        })
-      );
-      logger.info("Not empty feed", feed);
+      logger.info('Empty feed', feed);
+      feedItemsData.forEach((feedItem) => podcast.addItemToFeed(feed, {
+        _id: `${feedItem._id}`,
+        title: feedItem.title,
+        description: feedItem.description,
+        url: `${process.env.HOST_NAME}/${localUrl}`,
+        date: feedItem.createdAt,
+        fileUrl: `https://${process.env.SPACE_NAME}.${process.env.SPACE_ENDPOINT}/${feedItem.key}`,
+      }));
+      logger.info('Not empty feed', feed);
       const xmlFeed = await podcast.getXml(feed);
-      res.set("Content-Type", "application/rss+xml");
+      res.set('Content-Type', 'application/rss+xml');
       return res.send(xmlFeed);
     }
     res.status(404);
@@ -112,16 +110,15 @@ app.get("/rss/:id", async (req, res) => {
 //     .catch((err) => res.send(err));
 // });
 
-http.createServer(app).listen(process.env.SERVER_PORT, function () {
+http.createServer(app).listen(process.env.SERVER_PORT, () => {
   logger.info(
-    `Express server listening on port ${process.env.SERVER_PORT}. chrome://inspect`
+    `Express server listening on port ${process.env.SERVER_PORT}. chrome://inspect`,
   );
   try {
     bot.launch();
     db.setUpConnection();
-    doMainJob()
+    doMainJob();
   } catch (error) {
-    logger.error(new Error(error))
+    logger.error(new Error(error));
   }
-
 });

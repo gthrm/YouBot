@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { logger } = require('./logger.utils');
 
-require("../models/feed.model");
-require("../models/item.model");
-require("dotenv").config();
+require('../models/feed.model');
+require('../models/item.model');
+require('dotenv').config();
 
-const Feed = mongoose.model("FeedModel");
-const Item = mongoose.model("ItemModel");
+const Feed = mongoose.model('FeedModel');
+const Item = mongoose.model('ItemModel');
 
 const DB_CONFIG = {
   user: process.env.DB_USER,
@@ -27,10 +27,10 @@ function setUpConnection() {
   mongoose
     .connect(
       `mongodb+srv://${DB_CONFIG.user}:${DB_CONFIG.password}@${DB_CONFIG.host}/${DB_CONFIG.database}`,
-      MONGOOSE_CONNECT_CONFIG
+      MONGOOSE_CONNECT_CONFIG,
     )
     .then(() => {
-      logger.info(`Connection to database established`);
+      logger.info('Connection to database established');
     })
     .catch((err) => {
       logger.error(`db error ${err.message}`);
@@ -38,10 +38,10 @@ function setUpConnection() {
     });
 }
 
-function createUserFeed({ userId, userName = "unknown" }) {
+function createUserFeed({ userId, userName = 'unknown' }) {
   const newFeed = new Feed({
     userId: String(userId),
-    title: `YouBot`,
+    title: 'YouBot',
     description: `Personal podcast for ${userName}`,
     createdAt: new Date(),
     feed_url: `rss/${userId}`,
@@ -52,8 +52,8 @@ function createUserFeed({ userId, userName = "unknown" }) {
 function createFeedItem({
   userId,
   key,
-  title = "unknown",
-  description = "unknown",
+  title = 'unknown',
+  description = 'unknown',
   duration,
 }) {
   const newItem = new Item({
