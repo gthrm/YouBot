@@ -46,9 +46,6 @@ const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
     .on('progress', (p) => {
       readline.cursorTo(process.stdout, 0);
       const dowloadMessage = `${p.targetSize}kb downloaded; timemark: ${p.timemark}; currentKbps: ${p.currentKbps}`;
-      if (p.targetSize % 1024 === 0) {
-        logger.info(dowloadMessage, p);
-      }
       process.stdout.write(dowloadMessage);
     })
     .on('end', async () => {
