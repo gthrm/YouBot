@@ -28,7 +28,6 @@ function calculateDuration(lengthSeconds) {
 const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
   const videoId = uuidv4();
   const info = await ytdl.getInfo(url);
-  logger.info('File info', info);
 
   const stream = ytdl(url, {
     quality: 'highestaudio',

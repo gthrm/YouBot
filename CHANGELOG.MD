@@ -1,5 +1,9 @@
 # THIS IS A CHANGELOG
 
+## 1.0.5 - 23.08.2022
+
+- Fix: logs fixed
+
 ## 1.0.4 - 28.07.2022
 
 - Fix: eslint added

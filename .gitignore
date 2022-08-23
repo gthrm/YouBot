@@ -125,3 +125,4 @@ dist
 
 .aws
 .DS_Store
+*.mp3
