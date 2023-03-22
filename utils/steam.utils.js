@@ -55,6 +55,7 @@ const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
         Body: fileContent,
         ACL: 'public-read',
       };
+      logger.info('\nUpload to space started');
       const data = await s3.putObject(params).promise();
       await fs.unlinkSync(fileName);
       logger.info('\nDownload complete', data);
