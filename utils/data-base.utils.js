@@ -34,7 +34,6 @@ function setUpConnection() {
     })
     .catch((err) => {
       logger.error(`db error ${err.message}`);
-      process.exit(-1);
     });
 }
 
