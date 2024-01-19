@@ -37,7 +37,7 @@ const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
   const start = Date.now();
   const duration = calculateDuration(info?.videoDetails.lengthSeconds);
 
-  logger.info(`Duration has ben calcalated: ${duration} sec.`, duration);
+  logger.info(`Duration has been calculated: ${duration} sec.`, duration);
   return ffmpeg(stream)
     .audioBitrate(128)
     .setDuration(duration)
