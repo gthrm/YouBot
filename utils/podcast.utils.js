@@ -5,9 +5,9 @@ const createFeed = ({ title, description, feed_url }) => new Podcast({
   title,
   description,
   feed_url,
-  site_url: 'https://rss.cdroma.ru/',
+  site_url: 'https://rss.cdroma.me/',
   image_url:
-      'https://cloud.cdroma.ru/upload/3145d832b74f2f16f6b823fd312a5d131625916895274.png',
+      'https://cloud.cdroma.me/upload/3145d832b74f2f16f6b823fd312a5d131625916895274.png',
   docs: 'http://example.com/rss/docs.html',
   author: 'You Bot',
   managingEditor: 'You Bot',
@@ -33,7 +33,7 @@ const createFeed = ({ title, description, feed_url }) => new Podcast({
     },
   ],
   itunesImage:
-      'https://cloud.cdroma.ru/upload/3145d832b74f2f16f6b823fd312a5d131625916895274.png',
+      'https://cloud.cdroma.me/upload/3145d832b74f2f16f6b823fd312a5d131625916895274.png',
 });
 
 /* loop over data and add to feed */
