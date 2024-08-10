@@ -25,7 +25,7 @@ function calculateDuration(lengthSeconds) {
   return Number(MAX_DURATION);
 }
 
-const saveVideoAsMP3 = async (url, userId, next = () => {}) => {
+const saveVideoAsMP3 = async (url, userId, next = () => { }) => {
   const videoId = uuidv4();
   const fileName = `${__dirname}/${videoId}.mp3`;
   const key = `${userId}/${videoId}.mp3`;
@@ -44,6 +44,8 @@ const saveVideoAsMP3 = async (url, userId, next = () => {}) => {
         .setDuration(duration)
         .save(fileName)
         .on('progress', (p) => {
+          console.log('downloaded', p.targetSize, p.timemark, p.currentKbps);
+
           readline.cursorTo(process.stdout, 0);
           const dowloadMessage = `${p.targetSize}kb downloaded; timemark: ${p.timemark}; currentKbps: ${p.currentKbps}`;
           process.stdout.write(dowloadMessage);
